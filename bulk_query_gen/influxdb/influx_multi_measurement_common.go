@@ -3,6 +3,7 @@ package influxdb
 import (
 	"fmt"
 	"math/rand"
+	"strconv"
 	"time"
 
 	multiMeasurement "github.com/influxdata/influxdb-comparisons/bulk_data_gen/multi_measurement"
@@ -18,8 +19,13 @@ func InfluxMultiMeasurementCommon(lang Language, dbConfig bulkQuerygen.DatabaseC
 		panic("need influx database name")
 	}
 
+	version, err := strconv.Atoi(dbConfig["influxVersion"])
+	if err != nil {
+		panic("invalid influx version")
+	}
+
 	return &InfluxMultiMeasurement{
-		InfluxCommon: *newInfluxCommon(lang, dbConfig[bulkQuerygen.DatabaseName], queriesFullRange, scaleVar),
+		InfluxCommon: *newInfluxCommon(lang, dbConfig[bulkQuerygen.DatabaseName], queriesFullRange, scaleVar, version),
 	}
 }
 

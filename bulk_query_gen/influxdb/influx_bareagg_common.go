@@ -2,6 +2,7 @@ package influxdb
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	bulkQuerygen "github.com/influxdata/influxdb-comparisons/bulk_query_gen"
@@ -17,8 +18,13 @@ func NewInfluxBareAggregateQuery(agg Aggregate, lang Language, dbConfig bulkQuer
 		panic("need influx database name")
 	}
 
+	version, err := strconv.Atoi(dbConfig["influxVersion"])
+	if err != nil {
+		panic("invalid influx version")
+	}
+
 	return &InfluxBareAggregateQuery{
-		InfluxCommon: *newInfluxCommon(lang, dbConfig[bulkQuerygen.DatabaseName], queriesFullRange, scaleVar),
+		InfluxCommon: *newInfluxCommon(lang, dbConfig[bulkQuerygen.DatabaseName], queriesFullRange, scaleVar, version),
 		aggregate:    agg,
 	}
 }
